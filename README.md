@@ -1,515 +1,717 @@
-[final3.html](https://github.com/user-attachments/files/22654819/final3.html)
+[demo8.html](https://github.com/user-attachments/files/22721586/demo8.html)
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Data Modern & List</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#3b82f6"> <link rel="icon" type="image/png" sizes="192x192" href="logo1.png"> 
-    <link rel="apple-touch-icon" sizes="180x180" href="logo2.png">
+    <title>SIS Admin: Pencatatan Pembayaran Siswa Multi-Tahun</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
-        /* Modernized Styles */
         :root {
-            --primary-color: #3b82f6; /* Blue-500 */
-            --primary-dark: #2563eb; /* Blue-600 */
-            --success-bg: #dcfce7; /* Green-100 */
-            --success-text: #16a34a; /* Green-600 */
-            --error-bg: #fee2e2; /* Red-100 */
-            --error-text: #ef4444; /* Red-600 */
-            --warning-bg: #fffbeb; /* Yellow-100 */
-            --warning-text: #f59e0b; /* Yellow-600 */
-            --border-color: #d1d5db; /* Gray-300 */
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --gray-button: #6b7280;
-            --gray-button-hover: #4b5563;
+            --primary-color: #007bff; /* Biru */
+            --primary-dark: #0056b3;
+            --success-color: #28a745; 
+            --danger-color: #dc3545; 
+            --warning-color: #ffc107; 
+            --light-bg: #f4f7f6; 
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-color: #dee2e6;
+            --border-radius: 6px;
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 0;
-            background: #f4f7f9;
-            color: #1f2937; /* Gray-800 */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Ubah ke flex-start agar konten bisa discroll dari atas */
+            color: var(--text-color);
+            background-color: var(--light-bg);
             min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: #fff;
-            padding: 30px;
-            margin: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px var(--shadow-color);
-            transition: all 0.3s ease;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary-dark);
-            font-weight: 700;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: all 0.3s;
-            background-color: #f9fafb;
-        }
-
-        input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-            background-color: #fff;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            margin: 15px 0 5px 0;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 17px;
-            transition: all 0.3s;
-            box-sizing: border-box;
-        }
-
-        button[type="submit"] {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
-        }
-
-        button[type="submit"]:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-        
-        #btnToggleData {
-            background: var(--gray-button);
-            color: white;
-            font-size: 15px;
-            margin-top: 5px;
-        }
-        
-        #btnToggleData:hover {
-            background: var(--gray-button-hover);
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Notifications */
-        .notif {
-            text-align: center;
-            margin: 15px 0;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .notif.show {
-            opacity: 1;
-        }
-
-        .notif.success { background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
-        .notif.error { background: var(--error-bg); color: var(--error-text); border: 1px solid #fecaca; }
-
-        #loading {
-            text-align: center;
-            padding: 10px;
-            display: none;
-            font-style: italic;
-            color: #6b7280;
-        }
-
-        /* Confirmation Box */
-        .confirmBox {
-            text-align: center;
-            margin-top: 20px;
-            padding: 20px;
-            background: var(--warning-bg);
-            border: 1px solid #fcd34d;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            display: none;
-        }
-
-        .confirmBox p {
-            margin-top: 0;
-            color: var(--warning-text);
-            font-weight: 600;
-        }
-
-        .confirmBox button {
-            width: auto;
-            margin: 5px 10px;
-            padding: 10px 25px;
-            font-size: 15px;
-            box-shadow: none;
-        }
-
-        #btnTambah { background-color: var(--success-text); color: white; }
-        #btnTambah:hover { background-color: #059669; }
-        #btnBatal { background-color: var(--error-text); color: white; }
-        #btnBatal:hover { background-color: #dc2626; }
-        
-        /* Styling untuk Tabel Data (Container Tabel tersembunyi secara default) */
-        .dataTableContainer {
-            overflow-x: auto; /* Memungkinkan scroll horizontal jika tabel terlalu lebar */
-            padding-bottom: 20px;
-            max-height: 400px; /* Batasi tinggi tabel agar bisa discroll */
-            overflow-y: auto;
-            margin-top: 15px;
-            display: none; /* SEMBUNYI SECARA DEFAULT */
-            transition: all 0.5s ease;
-        }
-
-        .dataTable {
-            width: 100%;
-            min-width: 500px; /* Lebar minimum agar tidak terlalu sempit */
-            border-collapse: collapse;
-            font-size: 13px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .dataTable th, .dataTable td {
-            border: 1px solid #e5e7eb;
-            padding: 10px 8px;
-            text-align: left;
-        }
-
-        .dataTable th {
+        /* --- Global & Navigasi --- */
+        .header {
             background-color: var(--primary-color);
             color: white;
-            font-weight: 600;
-            position: sticky; 
-            top: 0;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container { padding: 20px; }
+        .content-section {
+            display: none;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .content-section.active { display: block; }
+        
+        /* --- Dashboard Controls --- */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Agar responsif */
+        }
+        .search-input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        .year-selector {
+            padding: 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            background-color: var(--light-bg);
+            font-weight: bold;
+            color: var(--primary-color);
         }
 
-        .dataTable tbody tr:nth-child(even) { background-color: #f9fafb; }
-        .dataTable tbody tr:hover { background-color: #eff6ff; }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .container { margin: 10px; padding: 20px; border-radius: 12px; }
+        /* --- Tabel Styling --- */
+        .table-wrapper { overflow-x: auto; }
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 1200px; 
         }
+        .main-table th, .main-table td {
+            padding: 12px 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .main-table th { background-color: var(--light-bg); font-weight: 600; }
+        
+        /* Status Colors */
+        .status-cell span { padding: 5px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .status-lunas { background-color: var(--success-color); color: white; }
+        .status-belum { background-color: var(--danger-color); color: white; }
+        .status-sebagian { background-color: var(--warning-color); color: var(--text-color); }
+
+        /* Actions & Forms */
+        .btn-action { background: none; border: none; cursor: pointer; margin: 0 3px; font-size: 16px; padding: 5px; }
+        .btn-pay { color: var(--success-color); }
+        .btn-edit { color: var(--primary-color); }
+        .btn-delete { color: var(--danger-color); }
+        .floating-button {
+            position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px;
+            background-color: var(--success-color); color: white; border-radius: 50%;
+            text-align: center; line-height: 55px; font-size: 24px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer; z-index: 10;
+        }
+
+        /* Modal & Notification */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); display: none; justify-content: center;
+            align-items: center; z-index: 100;
+        }
+        .modal-content { background: white; padding: 30px; border-radius: var(--border-radius); width: 90%; max-width: 500px; }
+        .loading-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.8); display: none; align-items: center;
+            justify-content: center; z-index: 9999; 
+        }
+        .spinner {
+            border: 6px solid #f3f3f3; border-top: 6px solid var(--primary-color);
+            border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .notification {
+            position: fixed; top: 20px; right: 20px; padding: 15px; border-radius: var(--border-radius);
+            color: white; display: none; z-index: 10000; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .notification.success { background-color: var(--success-color); }
+        .notification.error { background-color: var(--danger-color); }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); box-sizing: border-box;
+        }
+        .btn-submit { padding: 10px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: var(--border-radius); cursor: pointer; margin-top: 10px; }
+        .btn-cancel { background-color: #6c757d; margin-left: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>📋 Input Data Pengukuran Almamater</h2>
-        <div id="notif" class="notif"></div>
-        <div id="loading">⏳ Sedang diproses...</div>
 
-        <form id="myForm">
-            <input type="text" id="nama" name="Nama" placeholder="Cari / Isi Nama" list="namaList" autocomplete="off" required>
-            <datalist id="namaList"></datalist>
+<div class="header">
+    <div style="font-size: 20px; font-weight: bold;">SIS Admin</div>
+    <nav>
+        <a href="#" class="nav-link active" data-section="dashboard" onclick="switchSection(this, 'dashboard')">Dashboard</a>
+        <a href="#" class="nav-link" data-section="laporan" onclick="switchSection(this, 'laporan')">Laporan & Statistik</a>
+    </nav>
+</div>
 
-            <input type="number" id="ket1" placeholder="Keterangan 1">
-            <input type="number" id="ket2" placeholder="Keterangan 2">
-            <input type="number" id="ket3" placeholder="Keterangan 3">
-            <input type="number" id="ket4" placeholder="Keterangan 4">
-            <input type="number" id="ket5" placeholder="Keterangan 5">
+<div class="container">
 
-            <button type="submit">💾 Simpan Data</button>
-        </form>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px;">Memuat data dari SheetDB...</p>
+    </div>
+    
+    <div class="notification" id="notification"></div>
 
-        <div class="confirmBox" id="confirmBox">
-            <p>Nama **"<span id="confirmName"></span>"** belum ada. Apakah anda akan menambah data baru?</p>
-            <button id="btnTambah">✅ Tambah Data Baru</button>
-            <button id="btnBatal">❌ Batal</button>
-        </div>
-        
-        <button id="btnToggleData"> Tampilkan Daftar Data</button>
-
-        <div id="dataListContainer" class="dataTableContainer">
-            <p id="dataLoadingText" style="text-align: center; font-style: italic; color: #9ca3af; margin-top: 20px;">Memuat data...</p>
-        </div>
-        
+    <div class="floating-button" onclick="showAddForm()" title="Tambah Data Siswa">
+        <i class="fa fa-plus"></i>
     </div>
 
-    <script>
-        // GANTI INI DENGAN API ID ANDA
-        const API_URL = "https://sheetdb.io/api/v1/fhf0bcl2ayzul"; 
+    <div id="dashboard" class="content-section active">
+        <h2 id="dashboardTitle">Data Pembayaran Siswa</h2>
         
-        let allData = [];
-        let pendingData = null;
-        let isDataVisible = false;
+        <div class="dashboard-header">
+            <input type="text" id="searchInput" class="search-input" placeholder="Cari Nama Siswa atau NIS..." onkeyup="filterTable(this.value)">
+            <select id="yearSelector" class="year-selector" onchange="changeAcademicYear(this.value)"></select>
+        </div>
 
-        // --- Fungsi Utility ---
-        function showNotif(msg, type = "success") {
-            const notif = document.getElementById("notif");
-            notif.innerText = msg;
-            notif.className = "notif " + type;
-            setTimeout(() => notif.classList.add("show"), 10); 
-            notif.style.display = "block";
+        <div class="table-wrapper">
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;">No</th>
+                        <th style="width: 180px;">Nama</th>
+                        <th style="width: 100px;">NIS</th>
+                        <th colspan="12">Status Pembayaran (April - Maret)</th>
+                        <th style="width: 100px;">Total Status</th>
+                        <th style="width: 150px;">Aksi</th>
+                    </tr>
+                    <tr>
+                        <th></th><th></th><th></th>
+                        <th>Apr</th><th>Mei</th><th>Jun</th><th>Jul</th><th>Agu</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Des</th><th>Jan</th><th>Feb</th><th>Mar</th>
+                        <th></th><th></th>
+                    </tr>
+                </thead>
+                <tbody id="paymentTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="form_data" class="content-section">
+        <h2 id="formTitle">Tambah Data Siswa Baru</h2>
+        <form id="studentForm">
+            <input type="hidden" id="studentId" name="No"> 
+            <div class="form-grid">
+                <div class="form-group"><label>Nama Siswa</label><input type="text" id="inputNama" name="Nama" required></div>
+                <div class="form-group"><label>NIS</label><input type="text" id="inputNIS" name="NIS" required></div>
+                <div class="form-group"><label>Jenis Kelamin</label><select id="inputJK" name="Jenis Kelamin"><option>Laki-laki</option><option>Perempuan</option></select></div>
+                <div class="form-group"><label>Tempat Lahir</label><input type="text" id="inputTempatLahir" name="Tempat Lahir"></div>
+                <div class="form-group"><label>Tanggal Lahir (YYYY-MM-DD)</label><input type="date" id="inputTanggalLahir" name="Tanggal Lahir"></div>
+                <div class="form-group"><label>Alamat Siswa</label><input type="text" id="inputAlamat" name="Alamat"></div>
+                <div class="form-group"><label>Kota</label><input type="text" id="inputKota" name="Kota"></div>
+                <div class="form-group"><label>Provinsi</label><input type="text" id="inputProvinsi" name="Provinsi"></div>
+                <div class="form-group"><label>No HP Wali</label><input type="text" id="inputNoHP" name="No HP"></div>
+                <div class="form-group"><label>Nama Wali</label><input type="text" id="inputNamaWali" name="Nama Wali" required></div>
+                <div class="form-group"><label>Pekerjaan Wali</label><input type="text" id="inputPekerjaanWali" name="Pekerjaan Wali"></div>
+                <div class="form-group"><label>Alamat Wali</label><input type="text" id="inputAlamatWali" name="Alamat Wali"></div>
+                <div class="form-group"><label>Keterangan (Status)</label><select id="inputKeterangan" name="Keterangan"><option>Aktif</option><option>Nonaktif</option></select></div>
+            </div>
             
-            setTimeout(() => {
-                notif.classList.remove("show");
-                setTimeout(() => notif.style.display = "none", 500);
-            }, 3000);
-        }
+            <button type="submit" class="btn-submit" id="submitButton">Simpan Data</button>
+            <button type="button" class="btn-submit btn-cancel" onclick="switchSection(document.querySelector('.nav-link[data-section=\'dashboard\']'), 'dashboard')">Batal</button>
+        </form>
+    </div>
 
-        function showLoading(show = true) {
-            document.getElementById("loading").style.display = show ? "block" : "none";
+    <div id="laporan" class="content-section">
+        <h2>Laporan & Statistik Pembayaran</h2>
+        <p>Data ini diambil dari sheet "riwayat pembayaran & laporan statistik" (asumsi sheet 6).</p>
+
+        <div class="dashboard-header" style="flex-direction: row;">
+            <div style="background-color: #d4edda; padding: 15px; border-radius: 6px; flex-grow: 1;">
+                Total Siswa Lunas (12 bulan): <strong id="statsLunas">0</strong>
+            </div>
+            <div style="background-color: #f8d7da; padding: 15px; border-radius: 6px; flex-grow: 1;">
+                Total Siswa Belum Lunas (Sebagian & Nol): <strong id="statsBelum">0</strong>
+            </div>
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 6px; flex-grow: 1;">
+                Total Transaksi Dicatat: <strong id="statsTransaksi">0</strong>
+            </div>
+        </div>
+
+        <h3>Grafik Pembayaran per Bulan</h3>
+        <div style="height: 350px; background-color: #f9f9f9; border: 1px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+            <p>Placeholder Bar Chart (Membutuhkan library Chart.js, atau data dari sheet Statistik)</p>
+        </div>
+    </div>
+    
+</div>
+
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h3>Konfirmasi Pembayaran <span id="paymentStudentName"></span></h3>
+        <p>Pilih bulan yang dibayarkan:</p>
+        <div class="month-selection" id="monthSelection">
+            </div>
+
+        <div style="margin-top: 20px;">
+            <h4>Metode Pembayaran</h4>
+            <div class="payment-method-toggle" style="margin-bottom: 15px;">
+                <button type="button" class="active" data-method="Tunai" onclick="selectPaymentMethod(this, 'Tunai')">Tunai</button>
+                <button type="button" data-method="Transfer" onclick="selectPaymentMethod(this, 'Transfer')">Transfer</button>
+            </div>
+        </div>
+        
+        <div id="transferForm" style="display: none;">
+            <div class="form-group">
+                <label>Unggah Bukti Transfer (Opsional)</label>
+                <input type="file" id="buktiTransfer">
+            </div>
+        </div>
+        
+        <p id="paymentSummary">Total bulan dipilih: 0</p>
+        
+        <button type="button" class="btn-submit" onclick="processPayment()">Konfirmasi Bayar</button>
+        <button type="button" class="btn-submit btn-cancel" onclick="document.getElementById('paymentModal').style.display='none'">Batal</button>
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // !!! LANGSUNG GANTI DENGAN URL API SHEETDB ANDA !!!
+    // =========================================================================
+    // 1. URL untuk sheet database data umum (Ganti keseluruhan link)
+    const SHEETDB_URL_GENERAL = 'YOUR_SHEETDB_API_URL_GENERAL'; 
+    // 2. URL BASE untuk sheet pembayaran (Hanya Ganti linknya, JANGAN TAMBAH NAMA SHEET)
+    // Contoh: Jika link 23-24 adalah https://sheetdb.io/api/v1/XXXXX/database%2023-24, 
+    // maka URL BASE-nya adalah https://sheetdb.io/api/v1/XXXXX/database
+    const SHEETDB_URL_BASE = 'https://sheetdb.io/api/v1/xjw713aw3kzst/database%20data%20umum'; 
+    
+    // Konfigurasi Sistem
+    const PAYMENT_MONTHS = ["April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Januari", "Februari", "Maret"];
+    const TOTAL_MONTHS = PAYMENT_MONTHS.length;
+    
+    // Tahun Ajaran yang tersedia (Urutkan dari terbaru ke terlama untuk default)
+    const ACADEMIC_YEARS = ['26-27', '25-26', '24-25', '23-24']; 
+    let currentAcademicYear = ACADEMIC_YEARS[0]; // Default tahun ajaran aktif
+    
+    // Data state
+    let combinedData = [];
+    let studentDataGeneral = [];
+    let studentDataPayments = [];
+    let currentEditStudent = null;
+    let selectedPaymentMonths = [];
+    let currentPaymentMethod = 'Tunai';
+
+    // FUNGSI UTILITY
+    function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+    function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+    function showNotification(message, type = 'success') {
+        const notif = document.getElementById('notification');
+        notif.textContent = message;
+        notif.className = 'notification ' + type;
+        notif.style.display = 'block';
+        setTimeout(() => { notif.style.display = 'none'; }, 3000);
+    }
+
+    function getPaymentSheetURL(year) {
+        return `${SHEETDB_URL_BASE}%20${year}`;
+    }
+
+    function switchSection(element, sectionId) {
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        element.classList.add('active');
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        
+        if (sectionId === 'dashboard') {
+            loadCombinedData();
+        } else if (sectionId === 'laporan') {
+            // Asumsi sheet riwayat pembayaran & laporan statistik memiliki data ringkasan
+            updateStatistics();
+        }
+    }
+
+    function changeAcademicYear(year) {
+        currentAcademicYear = year;
+        document.getElementById('dashboardTitle').textContent = `Data Pembayaran Siswa T.A ${year}`;
+        loadCombinedData();
+    }
+
+    // --- FUNGSI GET DATA DARI SHEETDB (JOIN DATA) ---
+    async function fetchFromSheetDB(url) {
+        if (!url || url.includes('https://sheetdb.io/api/v1/xjw713aw3kzst')) {
+             throw new Error("URL API SheetDB belum diatur.");
         }
         
-        // --- Fungsi Rendering Data ---
-        function renderData(data) {
-            const container = document.getElementById("dataListContainer");
-            container.innerHTML = ""; 
-
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #6b7280;">Belum ada data tersimpan.</p>';
-                return;
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.error(`Gagal mengambil data dari URL: ${url}`, response);
+            // Cek jika error 404/not found (sheet belum ada)
+            if (response.status === 404) {
+                 return [];
             }
+            throw new Error(`Gagal mengambil data dari SheetDB (${response.statusText}).`);
+        }
+        return response.json();
+    }
 
-            // Ambil semua nama kolom (headers) dari baris pertama
-            // Filter kolom 'RowNumber' dan 'id' jika ada
-            const allKeys = Object.keys(data[0]);
-            const headers = allKeys.filter(key => key !== "RowNumber" && key !== "id");
+    async function loadCombinedData() {
+        showLoading();
+        try {
+            const currentPaymentURL = getPaymentSheetURL(currentAcademicYear);
             
-            const table = document.createElement("table");
-            table.className = "dataTable";
-
-            // 1. Buat Header Tabel (thead)
-            let thead = '<thead><tr>';
-            headers.forEach(header => {
-                thead += `<th>${header}</th>`;
-            });
-            thead += '</tr></thead>';
+            // 1. Ambil data dari sheet data umum & sheet pembayaran aktif
+            const generalPromise = fetchFromSheetDB(SHEETDB_URL_GENERAL);
+            const paymentsPromise = fetchFromSheetDB(currentPaymentURL);
             
-            // 2. Buat Isi Tabel (tbody)
-            let tbody = '<tbody>';
-            data.forEach(row => {
-                tbody += '<tr>';
-                headers.forEach(header => {
-                    // Gunakan nilai "-" jika kosong
-                    const cellValue = row[header] === undefined || row[header] === null || row[header] === "" ? "-" : row[header];
-                    tbody += `<td>${cellValue}</td>`;
+            // Tunggu kedua promise selesai
+            const [general, payments] = await Promise.all([generalPromise, paymentsPromise]);
+            
+            // Simpan data mentah
+            studentDataGeneral = general;
+            studentDataPayments = payments;
+            
+            // 2. Gabungkan data
+            combinedData = studentDataGeneral.map(g => {
+                const pay = studentDataPayments.find(p => p.No === g.No);
+                
+                let lunasCount = 0;
+                PAYMENT_MONTHS.forEach(month => {
+                    if (pay && pay[month] && pay[month] !== '') { lunasCount++; }
                 });
-                tbody += '</tr>';
-            });
-            tbody += '</tbody>';
-            
-            table.innerHTML = thead + tbody;
-            container.appendChild(table);
-        }
-        
-        // --- Fungsi Ambil Data dari API ---
-        async function loadData() {
-            showLoading(true);
-            const dataLoadText = document.getElementById("dataLoadingText");
-            if (dataLoadText) dataLoadText.style.display = "block"; 
-            
-            try {
-                // Tambahkan cache=false untuk memastikan data terbaru.
-                const res = await fetch(API_URL + "?cache=false"); 
-                if (!res.ok) throw new Error("Gagal mengambil data dari API.");
 
-                allData = await res.json();
-                
-                // Mengisi Datalist untuk Autocomplete
-                const list = document.getElementById("namaList");
-                list.innerHTML = "";
-                const uniqueNames = [...new Set(allData.map(row => row.Nama).filter(Boolean))];
-
-                uniqueNames.forEach(nama => {
-                    const option = document.createElement("option");
-                    option.value = nama;
-                    list.appendChild(option);
-                });
-                
-                // Merender data di tabel (tabel masih tersembunyi)
-                renderData(allData);
-                
-            } catch (e) {
-                console.error("Error loading data:", e);
-                showNotif("Gagal memuat data dari SheetDB ❌", "error");
-            } finally {
-                showLoading(false);
-                if (dataLoadText) dataLoadText.style.display = "none";
-            }
-        }
-
-        // --- Event Listeners ---
-
-        // 1. Autofill saat nama dipilih/diubah
-        document.getElementById("nama").addEventListener("change", function() {
-            const nama = this.value.trim();
-            const row = allData.find(r => r.Nama === nama);
-            if (row) {
-                document.getElementById("ket1").value = row["Ket 1"] || "";
-                document.getElementById("ket2").value = row["Ket 2"] || "";
-                document.getElementById("ket3").value = row["Ket 3"] || "";
-                document.getElementById("ket4").value = row["Ket 4"] || "";
-                document.getElementById("ket5").value = row["Ket 5"] || "";
-            } else {
-                // Reset kolom keterangan jika nama tidak ditemukan
-                document.getElementById("ket1").value = "";
-                document.getElementById("ket2").value = "";
-                document.getElementById("ket3").value = "";
-                document.getElementById("ket4").value = "";
-                document.getElementById("ket5").value = "";
-                document.getElementById("nama").value = nama; 
-            }
-        });
-
-        // 2. Navigasi form dengan tombol Enter
-        document.getElementById("myForm").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                const form = Array.from(this.elements).filter(el => el.tagName === "INPUT" || (el.tagName === "BUTTON" && el.type === "submit"));
-                const idx = form.indexOf(e.target);
-                if (idx > -1 && idx < form.length - 1) {
-                    form[idx + 1].focus();
-                } else if (idx === form.length - 1) {
-                    this.requestSubmit();
-                }
-            }
-        });
-
-        // 3. Handler Submit Form (PATCH/POST Logic)
-        document.getElementById("myForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
-            const nama = document.getElementById("nama").value.trim();
-
-            if (!nama) {
-                showNotif("Nama wajib diisi ❌", "error");
-                return;
-            }
-
-            const data = {
-                "Nama": nama,
-                "Ket 1": document.getElementById("ket1").value,
-                "Ket 2": document.getElementById("ket2").value,
-                "Ket 3": document.getElementById("ket3").value,
-                "Ket 4": document.getElementById("ket4").value,
-                "Ket 5": document.getElementById("ket5").value,
-            };
-
-            showLoading(true);
-            try {
-                const ada = allData.find(item => item.Nama === nama);
-                
-                if (ada) {
-                    // --- UPDATE DATA (PATCH) ---
-                    const response = await fetch(`${API_URL}/Nama/${encodeURIComponent(nama)}`, {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ data: data }) 
-                    });
-                    
-                    if (response.ok) {
-                        showNotif(`Data **${nama}** berhasil diperbarui ✅`, "success");
-                        this.reset();
-                        loadData(); 
-                    } else {
-                        showNotif("Gagal update data ❌", "error");
-                        console.error("Update failed response:", await response.text());
-                    }
+                let totalStatus;
+                if (lunasCount === TOTAL_MONTHS) {
+                    totalStatus = 'LUNAS';
+                } else if (lunasCount > 0) {
+                    totalStatus = `SEBAGIAN (${lunasCount}/${TOTAL_MONTHS})`;
                 } else {
-                    // --- KONFIRMASI TAMBAH DATA BARU ---
-                    pendingData = data;
-                    document.getElementById("confirmName").innerText = nama;
-                    document.getElementById("confirmBox").style.display = "block";
+                    totalStatus = 'BELUM BAYAR';
                 }
-            } catch (error) {
-                console.error("Error submitting form:", error);
-                showNotif("Terjadi error koneksi atau server ❌", "error");
-            } finally {
-                if (!pendingData) {
-                    showLoading(false);
-                }
-            }
-        });
-
-        // 4. Handler Tombol 'Tambah Data' (dari konfirmasi)
-        document.getElementById("btnTambah").addEventListener("click", async function() {
-            if (!pendingData) return;
-
-            document.getElementById("confirmBox").style.display = "none";
-            showLoading(true);
-
-            try {
-                // --- INSERT DATA BARU (POST) ---
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ data: pendingData }) 
-                });
                 
-                if (response.ok) {
-                    showNotif(`Data **${pendingData.Nama}** baru berhasil ditambahkan ✅`, "success");
-                    document.getElementById("myForm").reset();
-                    loadData(); 
-                } else {
-                    showNotif("Gagal menambah data ❌", "error");
-                    console.error("Insert failed response:", await response.text());
-                }
-            } catch (error) {
-                console.error("Error inserting data:", error);
-                showNotif("Terjadi error koneksi ❌", "error");
-            } finally {
-                pendingData = null;
-                showLoading(false);
-            }
-        });
+                return {
+                    ...g,
+                    ...pay,
+                    totalStatus: totalStatus,
+                    lunasCount: lunasCount
+                };
+            });
+            
+            renderTable(combinedData);
+        } catch (error) {
+            console.error("Error loading data:", error);
+            showNotification(`❌ ${error.message}`, 'error');
+            // Tampilkan tabel kosong jika gagal
+            renderTable([]);
+        }
+        hideLoading();
+    }
+    
+    // --- FUNGSI CRUD SISWA ---
+    
+    async function deleteStudent(studentNo) {
+        if (!confirm(`Anda yakin ingin menghapus data siswa No ${studentNo}? Data akan dihapus permanen dari semua sheet (General dan ${ACADEMIC_YEARS.join(', ')})!`)) return;
 
-        // 5. Handler Tombol 'Batal' (dari konfirmasi)
-        document.getElementById("btnBatal").addEventListener("click", function() {
-            showNotif("Penambahan data dibatalkan ❌", "error");
-            document.getElementById("confirmBox").style.display = "none";
-            pendingData = null;
-            document.getElementById("myForm").reset();
+        showLoading();
+        
+        try {
+            const paymentDeletes = ACADEMIC_YEARS.map(year => 
+                fetch(`${getPaymentSheetURL(year)}/No/${studentNo}`, { method: 'DELETE' })
+            );
+            const generalDelete = fetch(`${SHEETDB_URL_GENERAL}/No/${studentNo}`, { method: 'DELETE' });
+            
+            const results = await Promise.all([generalDelete, ...paymentDeletes]);
+            
+            // Cek apakah ada yang gagal (walau SheetDB biasanya return 200/204)
+            if (results.some(res => !res.ok && res.status !== 404)) {
+                throw new Error("Penghapusan ke salah satu sheet gagal.");
+            }
+            
+            showNotification('✅ Data berhasil dihapus dari semua sheet!', 'success');
+            loadCombinedData();
+
+        } catch (error) {
+            console.error("Error deleting data:", error);
+            showNotification(`❌ Gagal menghapus data: ${error.message}`, 'error');
+        }
+        hideLoading();
+    }
+
+    async function submitFormData(event) {
+        event.preventDefault();
+        showLoading();
+        
+        const isEdit = document.getElementById('studentId').value !== '';
+        const formData = new FormData(document.getElementById('studentForm'));
+        const newStudentGeneral = {};
+        formData.forEach((value, key) => { newStudentGeneral[key] = value; });
+
+        let studentNo = parseInt(document.getElementById('studentId').value);
+        
+        // Hanya untuk data baru, SheetDB auto-increment No, tapi kita butuh No untuk payment sheet
+        if (!isEdit) {
+            // Simulasi ID/No baru (asumsi No adalah angka)
+            studentNo = studentDataGeneral.length > 0 ? Math.max(...studentDataGeneral.map(s => s.No)) + 1 : 1;
+        }
+        newStudentGeneral.No = studentNo;
+
+        const successMessage = isEdit ? "Data berhasil diperbarui!" : "Data berhasil ditambahkan!";
+
+        try {
+            let generalResult;
+            const paymentPromises = [];
+
+            // 1. Update/Post ke sheet database data umum
+            if (isEdit) {
+                generalResult = fetch(`${SHEETDB_URL_GENERAL}/No/${studentNo}`, { 
+                    method: 'PATCH', 
+                    body: JSON.stringify({ data: newStudentGeneral }), 
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } else {
+                generalResult = fetch(SHEETDB_URL_GENERAL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ data: newStudentGeneral }), 
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            
+            // 2. Update/Post ke semua sheet pembayaran
+            ACADEMIC_YEARS.forEach(year => {
+                const paymentPayload = { No: studentNo, Nama: newStudentGeneral.Nama };
+                if (!isEdit) {
+                    PAYMENT_MONTHS.forEach(month => { paymentPayload[month] = ''; });
+                }
+
+                if (isEdit) {
+                    paymentPromises.push(fetch(`${getPaymentSheetURL(year)}/No/${studentNo}`, { 
+                        method: 'PATCH', 
+                        body: JSON.stringify({ data: paymentPayload }), 
+                        headers: { 'Content-Type': 'application/json' }
+                    }));
+                } else {
+                    paymentPromises.push(fetch(getPaymentSheetURL(year), { 
+                        method: 'POST', 
+                        body: JSON.stringify({ data: paymentPayload }), 
+                        headers: { 'Content-Type': 'application/json' }
+                    }));
+                }
+            });
+
+            const results = await Promise.all([generalResult, ...paymentPromises]);
+
+            if (results.some(res => !res.ok && res.status !== 404)) {
+                throw new Error("Operasi ke salah satu sheet gagal.");
+            }
+
+            showNotification('✅ ' + successMessage, 'success');
+            switchSection(document.querySelector('.nav-link[data-section=\'dashboard\']'), 'dashboard');
+            
+        } catch (error) {
+            console.error("Error submitting data:", error);
+            showNotification(`❌ Gagal menyimpan data: ${error.message}`, 'error');
+        }
+        hideLoading();
+    }
+    
+    // --- FUNGSI PEMBAYARAN & LOG TRANSAKSI ---
+
+    async function processPayment() {
+        if (selectedPaymentMonths.length === 0) {
+            return showNotification('Pilih minimal satu bulan yang dibayarkan.', 'error');
+        }
+
+        const studentNo = currentEditStudent.No;
+        const studentName = currentEditStudent.Nama;
+        // Format tanggal (D/M/YYYY)
+        const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric' }).replace(/\//g, '/');
+        
+        showLoading();
+        document.getElementById('paymentModal').style.display = 'none';
+
+        try {
+            // 1. Buat objek payload PATCH untuk sheet pembayaran (hanya bulan yang dibayar)
+            const paymentUpdate = {}; 
+            selectedPaymentMonths.forEach(month => {
+                paymentUpdate[month] = today;
+            });
+
+            // Kirim PATCH ke sheet pembayaran tahun ajaran aktif
+            const patchBody = { data: paymentUpdate };
+            const paymentSheetUpdate = fetch(`${getPaymentSheetURL(currentAcademicYear)}/No/${studentNo}`, { 
+                method: 'PATCH', 
+                body: JSON.stringify(patchBody), 
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // 2. Buat log transaksi untuk sheet 'riwayat pembayaran & laporan statistik'
+            const logPromises = selectedPaymentMonths.map(month => {
+                const logPayload = {
+                    Tanggal: today,
+                    No: studentNo,
+                    Nama: studentName,
+                    Bulan: month,
+                    Tahun_Ajaran: currentAcademicYear,
+                    Metode: currentPaymentMethod,
+                    Keterangan: 'Lunas'
+                    // Anda bisa tambahkan kolom Bukti_Transfer jika diimplementasikan
+                };
+                return fetch(`${SHEETDB_URL_BASE}%20riwayat%20pembayaran%20&%20laporan%20statistik`, {
+                    method: 'POST',
+                    body: JSON.stringify({ data: logPayload }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            });
+
+            const results = await Promise.all([paymentSheetUpdate, ...logPromises]);
+            if (results.some(res => !res.ok)) {
+                throw new Error("Gagal menyimpan pembayaran atau log transaksi.");
+            }
+
+            showNotification(`✅ Pembayaran ${selectedPaymentMonths.length} bulan (${currentPaymentMethod}) berhasil dicatat di T.A ${currentAcademicYear}!`, 'success');
+            loadCombinedData();
+
+        } catch (error) {
+             console.error("Error processing payment:", error);
+            showNotification(`❌ Gagal mencatat pembayaran: ${error.message}`, 'error');
+        }
+        hideLoading();
+    }
+    
+    // --- UI/RENDER & LOGIC ---
+
+    function renderTable(data) {
+        // ... (Fungsi renderTable tetap sama, menampilkan data gabungan)
+        const tableBody = document.getElementById('paymentTableBody');
+        tableBody.innerHTML = '';
+
+        data.forEach(student => {
+            let row = `<tr data-no="${student.No}">
+                <td>${student.No}</td>
+                <td style="text-align: left;">${student.Nama}</td>
+                <td>${student.NIS}</td>`;
+
+            let totalPaid = 0;
+            
+            // Kolom Status Pembayaran Bulanan (Apr - Mar)
+            PAYMENT_MONTHS.forEach(month => {
+                const isPaid = student[month];
+                const displayDate = isPaid ? isPaid : 'Belum';
+                const statusText = isPaid ? 'Lunas' : 'Belum';
+
+                row += `<td class="status-cell" title="Tanggal: ${displayDate}">
+                    <span class="${isPaid ? 'status-lunas' : 'status-belum'}">
+                        ${statusText}
+                    </span>
+                </td>`;
+                if (isPaid && isPaid !== '') totalPaid++;
+            });
+
+            // Kolom Total Status
+            let totalStatusClass = 'status-belum';
+            if (totalPaid === TOTAL_MONTHS) totalStatusClass = 'status-lunas';
+            else if (totalPaid > 0) totalStatusClass = 'status-sebagian';
+
+            row += `<td class="status-cell"><span class="${totalStatusClass}">${student.totalStatus}</span></td>`;
+            
+            // Kolom Aksi
+            row += `<td>
+                <button class="btn-action btn-pay" onclick="showPaymentModal(${student.No}, '${student.Nama.replace(/'/g, "\\'")}')"><i class="fa fa-money-bill-wave" title="Bayar"></i></button>
+                <button class="btn-action btn-edit" onclick="showEditForm(${student.No})"><i class="fa fa-pencil-alt" title="Edit Data"></i></button>
+                <button class="btn-action btn-delete" onclick="deleteStudent(${student.No})"><i class="fa fa-trash-alt" title="Hapus Data"></i></button>
+            </td></tr>`;
+            
+            tableBody.innerHTML += row;
         });
         
-        // 6. Handler Tombol 'Tampilkan Data'
-        document.getElementById("btnToggleData").addEventListener("click", function() {
-            const container = document.getElementById("dataListContainer");
-            const button = this;
+        if (data.length === 0) {
+             tableBody.innerHTML = `<tr><td colspan="${17}" style="text-align: center;">Data siswa tidak ditemukan di T.A ${currentAcademicYear}.</td></tr>`;
+        }
+    }
+
+    // --- Modal Pembayaran Logic ---
+    function showPaymentModal(studentNo, studentName) {
+        currentEditStudent = combinedData.find(s => s.No === studentNo);
+        if (!currentEditStudent) return;
+        
+        document.getElementById('paymentStudentName').textContent = studentName;
+        selectedPaymentMonths = [];
+        currentPaymentMethod = 'Tunai';
+        
+        const monthSelection = document.getElementById('monthSelection');
+        monthSelection.innerHTML = '';
+        
+        PAYMENT_MONTHS.forEach(month => {
+            const isPaid = currentEditStudent[month];
+            const button = document.createElement('button');
+            button.textContent = month;
+            button.setAttribute('data-month', month);
             
-            if (isDataVisible) {
-                // Sembunyikan
-                container.style.display = 'none';
-                button.innerHTML = 'Tampilkan Daftar Data';
-                isDataVisible = false;
+            if (isPaid && isPaid !== '') {
+                button.className = 'paid';
+                button.disabled = true;
             } else {
-                // Tampilkan
-                container.style.display = 'block';
-                button.innerHTML = 'Sembunyikan Daftar Data';
-                isDataVisible = true;
-                
-                // Pastikan data dimuat jika belum ada (walaupun seharusnya sudah dimuat saat startup)
-                if (allData.length === 0) {
-                    loadData();
-                }
+                button.onclick = () => toggleMonthSelection(button, month);
             }
+            monthSelection.appendChild(button);
         });
 
+        document.querySelectorAll('.payment-method-toggle button').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.payment-method-toggle button[data-method="Tunai"]').classList.add('active');
+        document.getElementById('transferForm').style.display = 'none';
+        
+        document.getElementById('paymentModal').style.display = 'flex';
+        updatePaymentSummary();
+    }
+    
+    function toggleMonthSelection(button, month) {
+        if (button.classList.contains('selected')) {
+            button.classList.remove('selected');
+            selectedPaymentMonths = selectedPaymentMonths.filter(m => m !== month);
+        } else {
+            button.classList.add('selected');
+            selectedPaymentMonths.push(month);
+        }
+        updatePaymentSummary();
+    }
 
-        // Muat data saat halaman pertama kali dibuka
-        loadData();
-    </script>
+    function selectPaymentMethod(button, method) {
+        currentPaymentMethod = method;
+        document.querySelectorAll('.payment-method-toggle button').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById('transferForm').style.display = (method === 'Transfer') ? 'block' : 'none';
+    }
+
+    function updatePaymentSummary() {
+        document.getElementById('paymentSummary').textContent = `Total bulan dipilih: ${selectedPaymentMonths.length}`;
+    }
+
+    // --- INISIALISASI ---
+    function initialize() {
+        // Isi selector tahun ajaran
+        const selector = document.getElementById('yearSelector');
+        ACADEMIC_YEARS.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = `T.A ${year}`;
+            selector.appendChild(option);
+        });
+        
+        // Set default tahun ajaran
+        selector.value = currentAcademicYear;
+        document.getElementById('dashboardTitle').textContent = `Data Pembayaran Siswa T.A ${currentAcademicYear}`;
+
+        loadCombinedData();
+        document.getElementById('studentForm').onsubmit = submitFormData;
+    }
+    
+    document.addEventListener('DOMContentLoaded', initialize);
+</script>
+
 </body>
 </html>
