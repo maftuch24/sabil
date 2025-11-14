@@ -1,9 +1,10 @@
 const BOT_TOKEN = "8290970800:AAEf9GHAZL1ZYJfu9IoRlrbNCPOmd2irH28";
-const CHAT_ID = "8213116534";
+const CHAT_ID   = "8213116534";
 
 let pin = "";
 const truePin = "311200";
 
+// ---------------- PIN -----------------
 function addNum(n) {
   if (pin.length < 6) pin += n;
   document.getElementById("pin").innerText = "••••••".slice(0, pin.length);
@@ -19,32 +20,46 @@ function okPin() {
     document.getElementById("pinBox").remove();
     document.getElementById("btn").disabled = false;
   } else {
-    alert("PIN Salah");
+    alert("PIN salah");
     pin = "";
     document.getElementById("pin").innerText = "";
   }
 }
 
+// ---------------- KIRIM PERINTAH -----------------
 async function toggleRelay() {
   let btn = document.getElementById("btn");
-  let cmd = btn.classList.contains("off") ? "ON!" : "OFF!";
 
-  // KIRIM HANYA SEBAGAI USER
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: cmd
-    })
-  });
+  let cmd = btn.classList.contains("off") ? "CMD:ON" : "CMD:OFF";
 
-  // Update tampilan lokal
-  btn.classList.toggle("on");
-  btn.classList.toggle("off");
-  btn.innerText = cmd;
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${cmd}`);
 
-  // update status
-  document.getElementById("status").innerText = "Status: " + cmd;
+  // update UI langsung
+  if (cmd === "CMD:ON") {
+    btn.classList.remove("off");
+    btn.classList.add("on");
+    btn.innerText = "ON";
+  } else {
+    btn.classList.remove("on");
+    btn.classList.add("off");
+    btn.innerText = "OFF";
+  }
 }
 
+// ---------------- STATUS REALTIME -----------------
+async function refreshStatus() {
+  try {
+    let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
+    let data = await res.json();
+
+    let last = data.result?.[data.result.length - 1]?.message?.text || "???";
+
+    if (last.startsWith("STATUS")) {
+      document.getElementById("status").innerText = last;
+    }
+  } catch (e) {
+    console.log("Error:", e);
+  }
+}
+
+setInterval(refreshStatus, 2000);
