@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Kontrol Lampu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+
+<style>
+body {
+  background: #f0f2f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial;
+  margin: 0;
+  padding: 20px;
+}
+.card {
+  background: white;
+  padding: 25px;
+  width: 330px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+.btn {
+  width: 100%;
+  padding: 18px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  background: #ddd;
+  transition: 0.2s;
+}
+.btn.on { background: #4caf50; color: white; }
+.btn.off { background: #e53935; color: white; }
+.numpad { 
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+}
+.numpad button {
+  padding: 20px;
+  font-size: 20px;
+  border-radius: 12px;
+  border: none;
+  background: #eee;
+}
+</style>
+</head>
+<body>
+
+<h2>Kontrol</h2>
+
+<div class="card">
+
+<div id="status">Status: …</div>
+
+<hr>
+
+<div id="pinBox">
+  <h3>Masukkan PIN</h3>
+  <div id="pin">••••••</div>
+
+  <div class="numpad">
+    <button onclick="addNum(1)">1</button>
+    <button onclick="addNum(2)">2</button>
+    <button onclick="addNum(3)">3</button>
+    <button onclick="addNum(4)">4</button>
+    <button onclick="addNum(5)">5</button>
+    <button onclick="addNum(6)">6</button>
+    <button onclick="addNum(7)">7</button>
+    <button onclick="addNum(8)">8</button>
+    <button onclick="addNum(9)">9</button>
+    <button onclick="delPin()">⌫</button>
+    <button onclick="addNum(0)">0</button>
+    <button onclick="okPin()">OK</button>
+  </div>
+</div>
+
+<button id="btn" class="btn off" onclick="toggleRelay()" disabled>OFF</button>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
