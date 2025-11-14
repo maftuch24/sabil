@@ -27,7 +27,7 @@ function okPin() {
 
 async function toggleRelay() {
   let btn = document.getElementById("btn");
-  let cmd = btn.classList.contains("off") ? "ON" : "OFF";
+  let cmd = btn.classList.contains("off") ? "ON!" : "OFF!";
 
   // KIRIM HANYA SEBAGAI USER
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -47,3 +47,4 @@ async function toggleRelay() {
   // update status
   document.getElementById("status").innerText = "Status: " + cmd;
 }
+
