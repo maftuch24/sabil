@@ -6,12 +6,12 @@ const truePin = "311200";
 
 function addNum(n) {
   if (pin.length < 6) pin += n;
-  document.getElementById("pin").innerText = "••••••".slice(0, pin.length);
+  document.getElementById("pin").innerText = "*".repeat(pin.length);
 }
 
 function delPin() {
   pin = pin.slice(0, -1);
-  document.getElementById("pin").innerText = "••••••".slice(0, pin.length);
+  document.getElementById("pin").innerText = "*".repeat(pin.length);
 }
 
 function okPin() {
@@ -27,13 +27,15 @@ function okPin() {
 
 async function toggleRelay() {
   let btn = document.getElementById("btn");
-  let cmd = btn.classList.contains("off") ? "CMD:ON" : "CMD:OFF";
+  let cmd = btn.classList.contains("off") ? "ON" : "OFF";
 
-  // HANYA KIRIM COMMAND — TIDAK READ UPDATES
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${cmd}`);
+  // 𐄁 Kirim sebagai user-command
+  await fetch(
+    `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=/cmd%20${cmd}`
+  );
 
-  // Ubah tampilan tombol
+  // Perbarui UI lokal
   btn.classList.toggle("on");
   btn.classList.toggle("off");
-  btn.innerText = cmd.replace("CMD:", "");
+  btn.innerText = cmd;
 }
