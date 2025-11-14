@@ -25,32 +25,25 @@ function okPin() {
   }
 }
 
-// ==========================
-//  Kirim pesan sebagai USER
-// ==========================
-async function sendTelegramMessage(text) {
-  return await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: text
-    })
-  });
-}
-
-// ==========================
-//  Tombol ON/OFF
-// ==========================
 async function toggleRelay() {
   let btn = document.getElementById("btn");
   let cmd = btn.classList.contains("off") ? "ON" : "OFF";
 
-  await sendTelegramMessage(cmd);
+  // KIRIM HANYA SEBAGAI USER
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      text: cmd
+    })
+  });
 
+  // Update tampilan lokal
   btn.classList.toggle("on");
   btn.classList.toggle("off");
   btn.innerText = cmd;
+
+  // update status
+  document.getElementById("status").innerText = "Status: " + cmd;
 }
