@@ -26,7 +26,7 @@ function okPin() {
 }
 
 // ==========================
-//  FIX: kirim pesan sebagai USER
+//  Kirim pesan sebagai USER
 // ==========================
 async function sendTelegramMessage(text) {
   return await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -50,21 +50,7 @@ async function toggleRelay() {
 
   await sendTelegramMessage(cmd);
 
-  // ubah tampilan tombol
   btn.classList.toggle("on");
   btn.classList.toggle("off");
   btn.innerText = cmd;
 }
-
-// ==========================
-//  Pantau status terakhir
-// ==========================
-async function refreshStatus() {
-  let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
-  let data = await res.json();
-  let last = data.result[data.result.length - 1]?.message?.text || "???";
-
-  document.getElementById("status").innerText = "Status: " + last;
-}
-
-setInterval(refreshStatus, 2000);
