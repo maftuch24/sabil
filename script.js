@@ -6,12 +6,12 @@ const truePin = "311200";
 
 function addNum(n) {
   if (pin.length < 6) pin += n;
-  document.getElementById("pin").innerText = "•".repeat(pin.length);
+  document.getElementById("pin").innerText = "••••••".slice(0, pin.length);
 }
 
 function delPin() {
   pin = pin.slice(0, -1);
-  document.getElementById("pin").innerText = "•".repeat(pin.length);
+  document.getElementById("pin").innerText = "••••••".slice(0, pin.length);
 }
 
 function okPin() {
@@ -25,10 +25,15 @@ function okPin() {
   }
 }
 
-async function sendToTelegram(text) {
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+// ==========================
+//  FIX: kirim pesan sebagai USER
+// ==========================
+async function sendTelegramMessage(text) {
+  return await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       chat_id: CHAT_ID,
       text: text
@@ -36,21 +41,27 @@ async function sendToTelegram(text) {
   });
 }
 
+// ==========================
+//  Tombol ON/OFF
+// ==========================
 async function toggleRelay() {
   let btn = document.getElementById("btn");
-  let cmd = btn.classList.contains("off") ? "ON!" : "OFF!";
+  let cmd = btn.classList.contains("off") ? "ON" : "OFF";
 
-  await sendToTelegram(cmd);
+  await sendTelegramMessage(cmd);
 
+  // ubah tampilan tombol
   btn.classList.toggle("on");
   btn.classList.toggle("off");
-  btn.innerText = cmd.replace("!", "");
+  btn.innerText = cmd;
 }
 
+// ==========================
+//  Pantau status terakhir
+// ==========================
 async function refreshStatus() {
   let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
   let data = await res.json();
-
   let last = data.result[data.result.length - 1]?.message?.text || "???";
 
   document.getElementById("status").innerText = "Status: " + last;
