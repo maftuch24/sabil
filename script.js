@@ -27,22 +27,13 @@ function okPin() {
 
 async function toggleRelay() {
   let btn = document.getElementById("btn");
-  let cmd = btn.classList.contains("off") ? "ON" : "OFF";
+  let cmd = btn.classList.contains("off") ? "on" : "off";
 
-  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${cmd}`);
+  await fetch(
+    `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${cmd}`
+  );
 
   btn.classList.toggle("on");
   btn.classList.toggle("off");
-  btn.innerText = cmd;
+  btn.innerText = cmd.toUpperCase();
 }
-
-async function refreshStatus() {
-  let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
-  let data = await res.json();
-
-  let last = data.result[data.result.length - 1]?.message?.text || "???";
-
-  document.getElementById("status").innerText = "Status: " + last;
-}
-
-setInterval(refreshStatus, 2000);
