@@ -1,0 +1,12 @@
+{
+"name": "Gawan Model Card",
+"short_name": "Gawan",
+"start_url": "/",
+"display": "standalone",
+"background_color": "#ffffff",
+"theme_color": "#0f172a",
+"icons": [
+{ "src": "sss.png", "sizes": "192x192", "type": "image/png" },
+{ "src": "sss.png", "sizes": "512x512", "type": "image/png" }
+]
+}
