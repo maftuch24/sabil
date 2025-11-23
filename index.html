@@ -1,35 +1,131 @@
-<form id="form">
-  <input type="text" id="nama" placeholder="Nama" required>
-  <input type="email" id="email" placeholder="Email" required>
-  <button type="submit">Submit</button>
-</form>
+<html lang="id">
 
-<p id="result"></p>
+
+<div style="margin-top:0.75rem;display:flex;gap:0.5rem">
+<button class="btn" type="submit">Simpan</button>
+<button type="button" id="resetBtn" class="btn ghost">Reset</button>
+</div>
+</form>
+</section>
+
+
+<section class="card" style="margin-top:1rem">
+<div class="row" style="align-items:center;gap:0.75rem">
+<input id="q" placeholder="Cari cepat: nama / alamat / acara / gawan" style="flex:1">
+<select id="filterStatus">
+<option value="">Semua Status</option>
+<option value="Belum">Belum</option>
+<option value="Sudah">Sudah</option>
+</select>
+<button class="btn" id="searchBtn">Cari</button>
+<button class="btn ghost" id="clearBtn">Bersihkan</button>
+</div>
+
+
+<div id="tableWrap">
+<table id="recordsTable">
+<thead>
+<tr>
+<th>#</th>
+<th>Nama</th>
+<th>Alamat</th>
+<th>Acara</th>
+<th>Gawan</th>
+<th>Status</th>
+<th>Timestamp</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+</section>
+
+
+<p class="muted small" style="margin-top:0.75rem">Catatan: pastikan API_BASE di script mengarah ke URL Web App Apps Script (deploy as web app) dan aksesnya diset ke "Anyone, even anonymous" agar bisa dipanggil dari GitHub Pages.</p>
+</main>
+
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyu_B31cwUEwwzX4kKDDd9obrhzq-LJJnAGYFgo7HSkEKSOvm5R-43i3HPGiuZ5W8H3Rg/exec";
+// ====== CONFIG: ISI DENGAN URL DEPLOY GOOGLE APPS SCRIPT ======
+const API_BASE = 'https://script.google.com/macros/s/AKfycbwRSQam8lNA7oRWLWZBlo0Tb7nItIsuma8q2CVOxJAPSt0HAReZamIBNwdoPUSChq-w/exec';
+// contoh: https://script.google.com/macros/s/AKfycbx.../exec
 
-document.getElementById("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
 
-  const data = {
-    nama: document.getElementById("nama").value,
-    email: document.getElementById("email").value
-  };
+if (!API_BASE.includes('https://')) console.warn('API_BASE belum diisi — ganti dengan URL Web App Apps Script.');
 
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",  // menghindari CORS error
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
 
-    document.getElementById("result").textContent = "Data terkirim!";
-  } catch (err) {
-    document.getElementById("result").textContent = "Error: " + err;
-  }
+async function api(action, method='GET', body=null, params={}){
+let url = API_BASE + (API_BASE.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
+for (const k in params){ url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); }
+
+
+const opts = { method, headers: {} };
+if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+
+
+const resp = await fetch(url, opts);
+if (!resp.ok) throw new Error('HTTP ' + resp.status);
+return resp.json();
+}
+
+
+// DOM
+const tbody = document.querySelector('#recordsTable tbody');
+const form = document.getElementById('recordForm');
+const refreshBtn = document.getElementById('refreshBtn');
+const resetBtn = document.getElementById('resetBtn');
+const qInput = document.getElementById('q');
+const searchBtn = document.getElementById('searchBtn');
+const clearBtn = document.getElementById('clearBtn');
+const filterStatus = document.getElementById('filterStatus');
+
+
+let cached = [];
+
+
+async function loadAll(){
+try{
+const res = await api('getRecords');
+if (res.success){ cached = res.data; renderTable(cached); }
+else alert('Gagal load: ' + (res.message||'Unknown'));
+}catch(err){ alert('Error load: ' + err.message); }
+}
+
+
+function renderTable(rows){
+tbody.innerHTML = '';
+if (!rows || rows.length === 0){ tbody.innerHTML = '<tr><td colspan="8" class="muted">Tidak ada data</td></tr>'; return; }
+rows.forEach((r, i)=>{
+const tr = document.createElement('tr');
+tr.innerHTML = `
+<td>${i+1}</td>
+<td>${escapeHtml(r.Nama||'')}</td>
+<td>${escapeHtml(r.Alamat||'')}</td>
+<td>${escapeHtml(r.Acara||'')}</td>
+<td>${escapeHtml(r.Gawan||'')}</td>
+<td><span class="pill">${escapeHtml(r['Status Pengembalian']||'')}</span></td>
+<td>${escapeHtml(r.Timestamp||'')}</td>
+<td>
+<button class="btn" data-action="edit" data-index="${i}">Edit</button>
+<button class="btn ghost" data-action="delete" data-index="${i}">Hapus</button>
+</td>
+`;
+tbody.appendChild(tr);
 });
-</script>
+}
+
+
+function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+
+form.addEventListener('submit', async (ev)=>{
+ev.preventDefault();
+const payload = {
+Nama: document.getElementById('nama').value.trim(),
+Alamat: document.getElementById('alamat').value.trim(),
+Acara: document.getElementById('acara').value.trim(),
+Gawan: document.getElementById('gawan').value.trim(),
+['Status Pengembalian']: document.getElementById('status').value
+};
+</html>
