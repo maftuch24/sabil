@@ -1,44 +1,35 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>Kontrol Relay</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="manifest.json">
+<form id="form">
+  <input type="text" id="nama" placeholder="Nama" required>
+  <input type="email" id="email" placeholder="Email" required>
+  <button type="submit">Submit</button>
+</form>
 
-<style>
-body { font-family: Arial; background:#f0f2f5; padding:20px; text-align:center; }
-.card {
-  background:white; padding:25px; border-radius:15px;
-  width:320px; margin:auto; box-shadow:0 4px 18px rgba(0,0,0,.2);
-}
-.btn {
-  width:100%; padding:18px; margin-top:15px; border:none;
-  border-radius:12px; font-size:22px; cursor:pointer; transition:.2s;
-}
-.btn.on { background:#4caf50; color:white; }
-.btn.off { background:#e53935; color:white; }
-.hidden { display:none; }
-</style>
+<p id="result"></p>
 
-</head>
-<body>
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyu_B31cwUEwwzX4kKDDd9obrhzq-LJJnAGYFgo7HSkEKSOvm5R-43i3HPGiuZ5W8H3Rg/exec";
 
-<h2>Kontrol Relay</h2>
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-<div class="card">
+  const data = {
+    nama: document.getElementById("nama").value,
+    email: document.getElementById("email").value
+  };
 
-  <h3>Masukkan PIN</h3>
-  <input id="pin" type="password" maxlength="6" style="padding:10px;width:90%;font-size:20px;text-align:center">
-  <button class="btn" onclick="cekPin()">OK</button>
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",  // menghindari CORS error
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
-  <div id="kontrol" class="hidden">
-      <button class="btn on" onclick="kirim('relay_on')">NYALAKAN</button>
-      <button class="btn off" onclick="kirim('relay_off')">MATIKAN</button>
-  </div>
-
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+    document.getElementById("result").textContent = "Data terkirim!";
+  } catch (err) {
+    document.getElementById("result").textContent = "Error: " + err;
+  }
+});
+</script>
