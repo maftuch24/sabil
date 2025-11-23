@@ -1,74 +1,125 @@
+<!doctype html>
 <html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gawan Model Card — Pencatatan</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    body{font-family:'Inter',system-ui,Arial,sans-serif;margin:0;background:#eef2f7;color:#0f172a}
+    header{background:#0f172a;color:white;padding:1.2rem 1.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+    .container{max-width:1050px;margin:1.5rem auto;padding:0 1.25rem}
+    .card{background:white;border-radius:14px;padding:1.25rem 1.5rem;border:1px solid #d7dee7;box-shadow:0 6px 20px rgba(15,23,42,0.08)}
+    .row{display:flex;gap:0.75rem;flex-wrap:wrap}
+    input,select,button,textarea{padding:0.65rem 0.75rem;border:1px solid #c5cedb;border-radius:10px;font-size:0.95rem;transition:0.2s}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#0f62fe;box-shadow:0 0 0 3px rgba(15,98,254,0.15)}
+    table{width:100%;border-collapse:collapse;margin-top:1.25rem;background:white;border-radius:12px;overflow:hidden}
+    th{background:#0f172a;color:white;padding:0.75rem;font-size:0.9rem}
+    td{padding:0.75rem;border-bottom:1px solid #e0e6ef;font-size:0.9rem;background:white}
+    tr:hover td{background:#f1f5fb}
+    .muted{color:#5c697b;font-size:0.9rem}
+    .btn{background:#0f62fe;color:white;border:none;padding:0.6rem 0.9rem;border-radius:10px;cursor:pointer;font-weight:600;transition:0.2s}
+    .btn:hover{opacity:0.88}
+    .btn.ghost{background:transparent;color:#0f62fe;border:2px solid #0f62fe}
+    .btn.ghost:hover{background:#e8f0fe}
+    .flex-between{display:flex;justify-content:space-between;align-items:center}
+    .small{font-size:0.9rem}
+    .pill{padding:0.32rem 0.65rem;border-radius:20px;border:1px solid #d0d7e4;background:#f8fafc;font-size:0.85rem}
+</style>
+</head>
+<body>
+  <header>
+    <div class="container flex-between">
+      <h1 style="margin:0;font-size:1.1rem">Gawan Model Card — Pencatatan</h1>
+      <div class="small">Sheet: <strong>Pencatatan</strong></div>
+    </div>
+  </header>
 
+  <main class="container">
+    <section class="card">
+      <div class="flex-between">
+        <div>
+          <strong>Tambah / Edit Gawan</strong>
+          <div class="muted">Isi form lalu klik Simpan. Gunakan tombol Reset untuk kosongkan form.</div>
+        </div>
+        <div>
+          <button class="btn" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
 
-<div style="margin-top:0.75rem;display:flex;gap:0.5rem">
-<button class="btn" type="submit">Simpan</button>
-<button type="button" id="resetBtn" class="btn ghost">Reset</button>
-</div>
-</form>
-</section>
+      <form id="recordForm" style="margin-top:0.75rem">
+        <input type="hidden" id="rowIndex" value="" />
+        <div class="row">
+          <input id="nama" placeholder="Nama" style="flex:2;min-width:180px" required>
+          <input id="alamat" placeholder="Alamat" style="flex:3;min-width:220px">
+          <input id="acara" placeholder="Acara" style="flex:2;min-width:160px">
+          <input id="gawan" placeholder="Gawan" style="flex:2;min-width:140px">
+          <select id="status">
+            <option value="Belum">Belum</option>
+            <option value="Sudah">Sudah</option>
+          </select>
+        </div>
 
+        <div style="margin-top:0.75rem;display:flex;gap:0.5rem">
+          <button class="btn" type="submit">Simpan</button>
+          <button type="button" id="resetBtn" class="btn ghost">Reset</button>
+        </div>
+      </form>
+    </section>
 
-<section class="card" style="margin-top:1rem">
-<div class="row" style="align-items:center;gap:0.75rem">
-<input id="q" placeholder="Cari cepat: nama / alamat / acara / gawan" style="flex:1">
-<select id="filterStatus">
-<option value="">Semua Status</option>
-<option value="Belum">Belum</option>
-<option value="Sudah">Sudah</option>
-</select>
-<button class="btn" id="searchBtn">Cari</button>
-<button class="btn ghost" id="clearBtn">Bersihkan</button>
-</div>
+    <section class="card" style="margin-top:1rem">
+      <div class="row" style="align-items:center;gap:0.75rem">
+        <input id="q" placeholder="Cari cepat: nama / alamat / acara / gawan" style="flex:1">
+        <select id="filterStatus">
+          <option value="">Semua Status</option>
+          <option value="Belum">Belum</option>
+          <option value="Sudah">Sudah</option>
+        </select>
+        <button class="btn" id="searchBtn">Cari</button>
+        <button class="btn ghost" id="clearBtn">Bersihkan</button>
+      </div>
 
+      <div id="tableWrap">
+        <table id="recordsTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nama</th>
+              <th>Alamat</th>
+              <th>Acara</th>
+              <th>Gawan</th>
+              <th>Status</th>
+              <th>Timestamp</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-<div id="tableWrap">
-<table id="recordsTable">
-<thead>
-<tr>
-<th>#</th>
-<th>Nama</th>
-<th>Alamat</th>
-<th>Acara</th>
-<th>Gawan</th>
-<th>Status</th>
-<th>Timestamp</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</div>
-</section>
-
-
-<p class="muted small" style="margin-top:0.75rem">Catatan: pastikan API_BASE di script mengarah ke URL Web App Apps Script (deploy as web app) dan aksesnya diset ke "Anyone, even anonymous" agar bisa dipanggil dari GitHub Pages.</p>
-</main>
-
+    <p class="muted small" style="margin-top:0.75rem">Catatan: pastikan API_BASE di script mengarah ke URL Web App Apps Script (deploy as web app) dan aksesnya diset ke "Anyone, even anonymous" agar bisa dipanggil dari GitHub Pages.</p>
+  </main>
 
 <script>
 // ====== CONFIG: ISI DENGAN URL DEPLOY GOOGLE APPS SCRIPT ======
-const API_BASE = 'https://script.google.com/macros/s/AKfycbwRSQam8lNA7oRWLWZBlo0Tb7nItIsuma8q2CVOxJAPSt0HAReZamIBNwdoPUSChq-w/exec';
+const API_BASE = '1hoyCsIcjPEwUrBNQI0kO69RvnCc1q-PfP4SDcAJ2LYM';
 // contoh: https://script.google.com/macros/s/AKfycbx.../exec
-
 
 if (!API_BASE.includes('https://')) console.warn('API_BASE belum diisi — ganti dengan URL Web App Apps Script.');
 
-
 async function api(action, method='GET', body=null, params={}){
-let url = API_BASE + (API_BASE.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
-for (const k in params){ url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); }
+  let url = API_BASE + (API_BASE.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
+  for (const k in params){ url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); }
 
+  const opts = { method, headers: {} };
+  if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
 
-const opts = { method, headers: {} };
-if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
-
-
-const resp = await fetch(url, opts);
-if (!resp.ok) throw new Error('HTTP ' + resp.status);
-return resp.json();
+  const resp = await fetch(url, opts);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  return resp.json();
 }
-
 
 // DOM
 const tbody = document.querySelector('#recordsTable tbody');
@@ -80,52 +131,106 @@ const searchBtn = document.getElementById('searchBtn');
 const clearBtn = document.getElementById('clearBtn');
 const filterStatus = document.getElementById('filterStatus');
 
-
 let cached = [];
 
-
 async function loadAll(){
-try{
-const res = await api('getRecords');
-if (res.success){ cached = res.data; renderTable(cached); }
-else alert('Gagal load: ' + (res.message||'Unknown'));
-}catch(err){ alert('Error load: ' + err.message); }
+  try{
+    const res = await api('getRecords');
+    if (res.success){ cached = res.data; renderTable(cached); }
+    else alert('Gagal load: ' + (res.message||'Unknown'));
+  }catch(err){ alert('Error load: ' + err.message); }
 }
-
 
 function renderTable(rows){
-tbody.innerHTML = '';
-if (!rows || rows.length === 0){ tbody.innerHTML = '<tr><td colspan="8" class="muted">Tidak ada data</td></tr>'; return; }
-rows.forEach((r, i)=>{
-const tr = document.createElement('tr');
-tr.innerHTML = `
-<td>${i+1}</td>
-<td>${escapeHtml(r.Nama||'')}</td>
-<td>${escapeHtml(r.Alamat||'')}</td>
-<td>${escapeHtml(r.Acara||'')}</td>
-<td>${escapeHtml(r.Gawan||'')}</td>
-<td><span class="pill">${escapeHtml(r['Status Pengembalian']||'')}</span></td>
-<td>${escapeHtml(r.Timestamp||'')}</td>
-<td>
-<button class="btn" data-action="edit" data-index="${i}">Edit</button>
-<button class="btn ghost" data-action="delete" data-index="${i}">Hapus</button>
-</td>
-`;
-tbody.appendChild(tr);
-});
+  tbody.innerHTML = '';
+  if (!rows || rows.length === 0){ tbody.innerHTML = '<tr><td colspan="8" class="muted">Tidak ada data</td></tr>'; return; }
+  rows.forEach((r, i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${escapeHtml(r.Nama||'')}</td>
+      <td>${escapeHtml(r.Alamat||'')}</td>
+      <td>${escapeHtml(r.Acara||'')}</td>
+      <td>${escapeHtml(r.Gawan||'')}</td>
+      <td><span class="pill">${escapeHtml(r['Status Pengembalian']||'')}</span></td>
+      <td>${escapeHtml(r.Timestamp||'')}</td>
+      <td>
+        <button class="btn" data-action="edit" data-index="${i}">Edit</button>
+        <button class="btn ghost" data-action="delete" data-index="${i}">Hapus</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
-
 
 function escapeHtml(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-
 form.addEventListener('submit', async (ev)=>{
-ev.preventDefault();
-const payload = {
-Nama: document.getElementById('nama').value.trim(),
-Alamat: document.getElementById('alamat').value.trim(),
-Acara: document.getElementById('acara').value.trim(),
-Gawan: document.getElementById('gawan').value.trim(),
-['Status Pengembalian']: document.getElementById('status').value
-};
+  ev.preventDefault();
+  const payload = {
+    Nama: document.getElementById('nama').value.trim(),
+    Alamat: document.getElementById('alamat').value.trim(),
+    Acara: document.getElementById('acara').value.trim(),
+    Gawan: document.getElementById('gawan').value.trim(),
+    ['Status Pengembalian']: document.getElementById('status').value
+  };
+  const idx = document.getElementById('rowIndex').value;
+  try{
+    if (idx === ''){
+      const res = await api('addRecord','POST',payload);
+      if (res.success) { alert('Berhasil tambah'); form.reset(); loadAll(); }
+      else alert('Gagal tambah: '+(res.message||''));
+    } else {
+      // update specific row — Apps Script uses rowIndex (1-based)
+      const res = await api('updateRecord','POST', {...payload, rowIndex: parseInt(idx) });
+      if (res.success){ alert('Berhasil update'); form.reset(); document.getElementById('rowIndex').value=''; loadAll(); }
+      else alert('Gagal update: '+(res.message||''));
+    }
+  }catch(err){ alert('Error simpan: '+err.message); }
+});
+
+resetBtn.addEventListener('click', ()=>{ form.reset(); document.getElementById('rowIndex').value=''; });
+refreshBtn.addEventListener('click', loadAll);
+
+tbody.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button'); if(!btn) return;
+  const action = btn.dataset.action; const i = parseInt(btn.dataset.index);
+  if (action === 'edit'){
+    const rec = cached[i];
+    document.getElementById('nama').value = rec.Nama||'';
+    document.getElementById('alamat').value = rec.Alamat||'';
+    document.getElementById('acara').value = rec.Acara||'';
+    document.getElementById('gawan').value = rec.Gawan||'';
+    document.getElementById('status').value = rec['Status Pengembalian']||'Belum';
+    // Save row index (1-based index in sheet = rec._row)
+    document.getElementById('rowIndex').value = rec._row || i+2; // fallback
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else if (action === 'delete'){
+    if (!confirm('Hapus baris ini?')) return;
+    const rec = cached[i];
+    try{
+      const res = await api('deleteRecord','POST',{ rowIndex: rec._row || (i+2) });
+      if (res.success){ alert('Terhapus'); loadAll(); }
+      else alert('Gagal hapus: '+(res.message||''));
+    }catch(err){ alert('Error delete: '+err.message); }
+  }
+});
+
+searchBtn.addEventListener('click', ()=>{
+  const q = qInput.value.trim(); const status = filterStatus.value;
+  let results = cached.filter(r=>{
+    const hay = (r.Nama+' '+r.Alamat+' '+r.Acara+' '+r.Gawan).toLowerCase();
+    const passQ = q === '' ? true : hay.includes(q.toLowerCase());
+    const passS = status === '' ? true : (r['Status Pengembalian'] === status);
+    return passQ && passS;
+  });
+  renderTable(results);
+});
+
+clearBtn.addEventListener('click', ()=>{ qInput.value=''; filterStatus.value=''; renderTable(cached); });
+
+// initial load
+loadAll();
+</script>
+</body>
 </html>
