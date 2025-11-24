@@ -1,190 +1,100 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pencatatan Gawan</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    input, select {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #bbb;
-      width: 100%;
-    }
-    button {
-      background: #3b82f6;
-      color: white;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: #2563eb;
-    }
-    .card {
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-      margin-bottom: 10px;
-    }
-    .topbar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    .delete-btn {
-      background: #ef4444;
-    }
-    .delete-btn:hover {
-      background: #dc2626;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Frontend Pencatatan</title>
+<style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; }
+    .item { border: 1px solid #ddd; padding: 10px; margin: 5px 0; }
+</style>
 </head>
 <body>
-  <h2>Pencatatan Gawan</h2>
 
-  <div class="container">
+<h2>Manajemen Data – Sheet "Pencatatan"</h2>
 
-    <div class="row">
-      <input id="nama" placeholder="Nama" />
-      <input id="alamat" placeholder="Alamat" />
-      <input id="acara" placeholder="Acara" />
-      <input id="gawan" placeholder="Gawan" />
-    </div>
+<h3>Tambah Data</h3>
+<input id="nama" placeholder="Nama">
+<input id="jumlah" placeholder="Jumlah">
+<button onclick="createData()">Tambah</button>
 
-    <select id="status">
-      <option value="Belum">Belum Dikembalikan</option>
-      <option value="Sudah">Sudah Dikembalikan</option>
-    </select>
+<hr>
 
-    <button onclick="simpanData()">SIMPAN</button>
-
-    <div class="topbar">
-      <input id="search" placeholder="Cari nama..." onkeyup="render()" />
-      <select id="filter" onchange="render()">
-        <option value="all">Semua</option>
-        <option value="Sudah">Sudah</option>
-        <option value="Belum">Belum</option>
-      </select>
-    </div>
-
-    <div id="list"></div>
-  </div>
+<h3>Data pada Spreadsheet</h3>
+<div id="list"></div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwRSQam8lNA7oRWLWZBlo0Tb7nItIsuma8q2CVOxJAPSt0HAReZamIBNwdoPUSChq-w/exec"; // <-- ganti dengan /exec
-let DATA = [];
+const API_URL = "https://script.google.com/macros/s/AKfycbwRSQam8lNA7oRWLWZBlo0Tb7nItIsuma8q2CVOxJAPSt0HAReZamIBNwdoPUSChq-w/exec";
 
-async function ambilData() {
-  const res = await fetch(API + "?action=getAll");
-  DATA = await res.json();
-  render();
+// ---------------- GET DATA ------------------
+async function loadData() {
+    const res = await fetch(API_URL + "?action=get");
+    const data = await res.json();
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    data.forEach(row => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+            <b>${row.nama}</b> – ${row.jumlah}
+            <br>
+            <button onclick="updateData('${row.id}')">Edit</button>
+            <button onclick="deleteData('${row.id}')">Hapus</button>
+        `;
+        list.appendChild(div);
+    });
 }
 
-function render() {
-  const q = document.getElementById("search").value.toLowerCase();
-  const f = document.getElementById("filter").value;
-  const box = document.getElementById("list");
-  box.innerHTML = "";
+// ---------------- POST DATA ------------------
+async function createData() {
+    const nama = document.getElementById("nama").value;
+    const jumlah = document.getElementById("jumlah").value;
 
-  DATA.forEach((row, i) => {
-    if (i === 0) return; // header sheet
+    await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "post",
+            nama: nama,
+            jumlah: jumlah
+        }),
+    });
 
-    const nama = row[0] + "";
-    const alamat = row[1];
-    const acara = row[2];
-    const gawan = row[3];
-    const status = row[4];
-
-    if (!nama.toLowerCase().includes(q)) return;
-    if (f !== "all" && f !== status) return;
-
-    box.innerHTML += `
-      <div class='card'>
-        <b>${nama}</b><br>
-        Alamat: ${alamat}<br>
-        Acara: ${acara}<br>
-        Gawan: ${gawan}<br>
-        Status: <b>${status}</b><br><br>
-
-        <button onclick="ubahStatus(${i})">Toggle Status</button>
-        <button class='delete-btn' onclick="hapus(${i})">Hapus</button>
-      </div>`;
-  });
+    loadData();
 }
 
-async function simpanData() {
-  const data = {
-    action: "add",
-    nama: nama.value,
-    alamat: alamat.value,
-    acara: acara.value,
-    gawan: gawan.value,
-    status: status.value
-  };
-
-  await fetch(API + "?action=add", {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
-
-  ambilData();
+// ---------------- DELETE DATA ------------------
+async function deleteData(id) {
+    await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "delete",
+            id: id
+        }),
+    });
+    loadData();
 }
 
-async function ubahStatus(row) {
-  const d = DATA[row];
-  const newStatus = d[4] === "Sudah" ? "Belum" : "Sudah";
+// ---------------- EDIT/UPDATE DATA ------------------
+async function updateData(id) {
+    const newNama = prompt("Nama baru:");
+    const newJumlah = prompt("Jumlah baru:");
 
-  await fetch(API + "?action=edit", {
-    method: "POST",
-    body: JSON.stringify({
-      action: "edit",
-      row: row + 1,
-      nama: d[0], alamat: d[1], acara: d[2],
-      gawan: d[3], status: newStatus, timestamp: d[5]
-    })
-  });
+    await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "edit",
+            id: id,
+            nama: newNama,
+            jumlah: newJumlah
+        }),
+    });
 
-  ambilData();
+    loadData();
 }
 
-async function hapus(row) {
-  await fetch(API + "?action=delete", {
-    method: "POST",
-    body: JSON.stringify({ action: "delete", row: row + 1 })
-  });
-
-  ambilData();
-}
-
-ambilData();
+loadData();
 </script>
-
 </body>
 </html>
