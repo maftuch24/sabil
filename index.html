@@ -1,100 +1,22 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Frontend Pencatatan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi</title>
 <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input, button { margin: 5px 0; padding: 8px; width: 100%; }
-    .item { border: 1px solid #ddd; padding: 10px; margin: 5px 0; }
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  iframe {
+    width: 100%;
+    height: 100vh;
+    border: none;
+  }
 </style>
 </head>
 <body>
-
-<h2>Manajemen Data – Sheet "Pencatatan"</h2>
-
-<h3>Tambah Data</h3>
-<input id="nama" placeholder="Nama">
-<input id="jumlah" placeholder="Jumlah">
-<button onclick="createData()">Tambah</button>
-
-<hr>
-
-<h3>Data pada Spreadsheet</h3>
-<div id="list"></div>
-
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwRSQam8lNA7oRWLWZBlo0Tb7nItIsuma8q2CVOxJAPSt0HAReZamIBNwdoPUSChq-w/exec";
-
-// ---------------- GET DATA ------------------
-async function loadData() {
-    const res = await fetch(API_URL + "?action=get");
-    const data = await res.json();
-
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-
-    data.forEach(row => {
-        const div = document.createElement("div");
-        div.className = "item";
-        div.innerHTML = `
-            <b>${row.nama}</b> – ${row.jumlah}
-            <br>
-            <button onclick="updateData('${row.id}')">Edit</button>
-            <button onclick="deleteData('${row.id}')">Hapus</button>
-        `;
-        list.appendChild(div);
-    });
-}
-
-// ---------------- POST DATA ------------------
-async function createData() {
-    const nama = document.getElementById("nama").value;
-    const jumlah = document.getElementById("jumlah").value;
-
-    await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            action: "post",
-            nama: nama,
-            jumlah: jumlah
-        }),
-    });
-
-    loadData();
-}
-
-// ---------------- DELETE DATA ------------------
-async function deleteData(id) {
-    await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            action: "delete",
-            id: id
-        }),
-    });
-    loadData();
-}
-
-// ---------------- EDIT/UPDATE DATA ------------------
-async function updateData(id) {
-    const newNama = prompt("Nama baru:");
-    const newJumlah = prompt("Jumlah baru:");
-
-    await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            action: "edit",
-            id: id,
-            nama: newNama,
-            jumlah: newJumlah
-        }),
-    });
-
-    loadData();
-}
-
-loadData();
-</script>
+  <iframe src="https://script.google.com/macros/s/AKfycbxWDpS7IeM4QD4ZkELXySizi-82yr96Rg_oIamYOj7x4QiirIt-yjHxWBHzbIcy7pzu/exec"></iframe>
 </body>
 </html>
